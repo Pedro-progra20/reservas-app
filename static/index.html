@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sistema de Reservas</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>Sistema de Reservas</h1>
+    <span id="api-status" class="pill pill-off">API: verificando…</span>
+  </header>
+
+  <main class="grid">
+    <!-- ───── FORMULARIO ───── -->
+    <section class="card">
+      <h2 id="form-title">Nueva reserva</h2>
+      <form id="form-reserva" autocomplete="off">
+        <input type="hidden" id="reserva-id" />
+
+        <label>Nombre del cliente
+          <input type="text" id="cliente_nombre" required minlength="2" maxlength="100" />
+        </label>
+
+        <label>Correo electrónico
+          <input type="email" id="cliente_email" required />
+        </label>
+
+        <label>Teléfono
+          <input type="text" id="telefono" required placeholder="+52 555 123 4567" />
+        </label>
+
+        <div class="row">
+          <label>Fecha
+            <input type="date" id="fecha" required />
+          </label>
+          <label>Hora
+            <input type="time" id="hora" required step="900" value="19:00" />
+          </label>
+        </div>
+
+        <div class="row">
+          <label>Personas
+            <input type="number" id="num_personas" required min="1" max="20" value="2" />
+          </label>
+          <label>Mesa (opcional)
+            <input type="text" id="mesa" maxlength="10" placeholder="M5" />
+          </label>
+        </div>
+
+        <label>Estado
+          <select id="estado">
+            <option value="pendiente">Pendiente</option>
+            <option value="confirmada">Confirmada</option>
+            <option value="cancelada">Cancelada</option>
+          </select>
+        </label>
+
+        <label>Notas
+          <textarea id="notas" maxlength="500" rows="2"></textarea>
+        </label>
+
+        <div class="actions">
+          <button type="submit" class="btn btn-primary">Guardar</button>
+          <button type="button" class="btn btn-ghost" id="btn-cancelar">Limpiar</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- ───── LISTA ───── -->
+    <section class="card">
+      <div class="card-head">
+        <h2>Reservas</h2>
+        <button class="btn btn-ghost" id="btn-refresh">⟳ Recargar</button>
+      </div>
+
+      <div class="filters">
+        <select id="filtro-estado">
+          <option value="">Todos los estados</option>
+          <option value="pendiente">Pendiente</option>
+          <option value="confirmada">Confirmada</option>
+          <option value="cancelada">Cancelada</option>
+        </select>
+        <input type="date" id="filtro-fecha" />
+        <button class="btn btn-ghost" id="btn-filtrar">Filtrar</button>
+      </div>
+
+      <div id="lista-reservas" class="list"></div>
+    </section>
+
+    <!-- ───── REPORTE PESADO / CONCURRENCIA ───── -->
+    <section class="card span-2">
+      <div class="card-head">
+        <h2>Reporte pesado de ocupación</h2>
+      </div>
+      <p class="muted">
+        Este endpoint ejecuta una tarea intensiva de CPU en un hilo secundario
+        (<code>asyncio.to_thread()</code>). El servidor debe seguir respondiendo
+        mientras se procesa.
+      </p>
+
+      <div class="filters">
+        <label class="inline">Carga CPU
+          <input type="number" id="iteraciones" value="8000000" min="500000" max="40000000" step="500000" />
+        </label>
+        <label class="inline">
+          <input type="checkbox" id="incluir-canceladas" /> Incluir canceladas
+        </label>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-primary" id="btn-reporte">Generar reporte</button>
+        <button class="btn btn-warn" id="btn-concurrencia">Probar concurrencia</button>
+      </div>
+
+      <div id="log-concurrencia" class="log"></div>
+      <pre id="salida-reporte" class="output"></pre>
+    </section>
+  </main>
+
+  <div id="toast" class="toast"></div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
